@@ -1,0 +1,24 @@
+{
+  "name": "asincronismojs",
+  "version": "1.0.0",
+  "description": "Asincronismo: callbacks, promesas, async, await y uso de APIs",
+  "main": "src/idex.js",
+  "scripts": {
+    "callback": "node src/callback/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/minxola/asincronismoJS.git"
+  },
+  "keywords": [
+    "asincronismo",
+    "callbacks",
+    "async"
+  ],
+  "author": "minxola",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/minxola/asincronismoJS/issues"
+  },
+  "homepage": "https://github.com/minxola/asincronismoJS#readme"
+}
