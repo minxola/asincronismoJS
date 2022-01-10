@@ -37,9 +37,138 @@ Trabajaremos con la API de Rick and Morty, una serie animada.
 
 ### 4. Definición estructura Callback
 
-Un callback es un función que al crearla le pasamos como parámetro otra función, 
+Una **función de callback** es una función que se pasa a otra función como un argumento, que luego se invoca dentro de la función externa para completar algún tipo de rutina o acción.
+
+Es una convención llamarla callback (*Llamar de vuelta*), no es una palabra reservada.
+
+Una función de callback  puede ser:
+
+- Síncrona: Se ejecuta inmediatamente
+
+  ```js
+  //callback síncrono
+  function sum(n1, n2){
+      return n1 + n2;
+  }
+  
+  function calc(n1, n2, callback){
+      return callback(n1, n2);
+  }
+  
+  console.log(calc(5, 2, sum));
+  ```
+
+  
+
+- Asíncrona: Se ejecuta después de haber completado una operación
+
+  ```js
+  function date(callback){
+      console.log(new Date);
+      setTimeout(() => {
+          let date = new Date;
+          callback(date);
+      }, 3000);
+  }
+  
+  function printDate(dateNow){
+      console.log(dateNow);
+  }
+  
+  date(printDate);
+  ```
+
+
 
 ### 5. Peticiones a APIs usando Callbacks
+
+Primero instalar paquete `xmlhttprequest` des la consola correr el código:
+
+`npm install xmlhttprequest --save`
+
+**Herramientas**:
+
+API: [https://rickandmortyapi.com/api/character/](https://rickandmortyapi.com/api/character/)
+
+POSTMAN: [https://www.postman.com/](https://www.postman.com/), para ver APIs
+
+JSON Viewer Extention for chrome: [Extensión](https://chrome.google.com/webstore/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh)
+
+
+
+**Estados de readyState (XMLHttpRequest):**
+
+| Valor | Estado        | Descripción                                                  |
+| ----- | ------------- | ------------------------------------------------------------ |
+| 0     | UNINITIALIZED | Todavía no se llamó a `open()`                               |
+| 1     | LOADING       | Todavía no se llamó a `send()`                               |
+| 2     | LOADED        | `send()` ya fue invocado, y los encabezados y el estado están disponibles |
+| 3     | INTERACTIVE   | Descargando; `responseText` contiene información parcial     |
+| 4     | COMPLETED     | La operación está terminada                                  |
+
+**XMLHttpRequest status y statusText:**
+
+| HTTP Response Status    | Code      |
+| ----------------------- | --------- |
+| Informational responses | 100 - 199 |
+| Successful responses    | 200 - 299 |
+| Redirection messages    | 300 - 399 |
+| Client error responses  | 400 - 499 |
+| Server error responses  | 500 - 599 |
+
+Mas comunes:
+
+- 200: OK
+- 404: Not found
+- 500: Internal Server Error
+
+```js
+//Trabajará sobre nodejs, se debe instalar dependencia xmlhttprequest
+//Instalar en la terminal: npm install xmlhttprequest --save
+
+//Instanciar xmlhttprequest
+let XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+
+//Función que permite traer información desde la API
+function fetchData(url_api, callback){
+
+    //Generar la referencia al objeto que se necesita
+    let xhttp = new XMLHttpRequest();
+
+    //Hacer llamado a la URL (url_api), true es para que se maneje asincronamente
+    xhttp.open('GET', url_api, true);
+
+    //Escuchar la petición
+    xhttp.onreadystatechange = function(event){
+
+        //Validación del readyState (4 completado)
+        if(xhttp.readyState === 4){
+
+            //Validación Estado de la petición (200 correctamente)
+            if(xhttp.status === 200){
+
+                //callback (error, resultado)
+                //El resultado es texto (string), por lo que se tiene que parsear a formato JSON
+                callback(null, JSON.parse(xhttp.responseText);
+
+            } else{
+
+                //Buena practica llamar else con un error
+                const error = new Error('Error ' + url_api + 'Status: ' + xhttp.status);
+
+                //callback (error, resultado)
+                //error si se envia, no hay resultado:null
+                return callback(error, null);
+            }
+        }
+    }
+    //Enviar la solicitud
+    xhttp.send();
+}
+```
+
+
+
 
 ### 6. Múltiples peticiones a un API con Callbacks
 

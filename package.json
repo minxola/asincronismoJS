@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/minxola/asincronismoJS/issues"
   },
-  "homepage": "https://github.com/minxola/asincronismoJS#readme"
+  "homepage": "https://github.com/minxola/asincronismoJS#readme",
+  "dependencies": {
+    "xmlhttprequest": "^1.8.0"
+  }
 }
