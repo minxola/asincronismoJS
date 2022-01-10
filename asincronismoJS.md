@@ -122,6 +122,13 @@ Mas comunes:
 - 404: Not found
 - 500: Internal Server Error
 
+**Métodos comunes de petición HTTP**:
+
+- GET: *solicita una representación de un recurso específico. Las peticiones que usan GET solo deben recuperar datos*
+- POST: *enviar una entidad a un recurso en específico, generando cambio de estado o efectos secundarios en el servideo*
+- PUT: *reemplaza la representación actual del recurso con carga útil de la petición*
+- DELETE: *borra un recurso específico*
+
 ```js
 //Trabajará sobre nodejs, se debe instalar dependencia xmlhttprequest
 //Instalar en la terminal: npm install xmlhttprequest --save
@@ -167,10 +174,55 @@ function fetchData(url_api, callback){
 }
 ```
 
-
-
-
 ### 6. Múltiples peticiones a un API con Callbacks
+
+Luego de haber creado la función principal que recibe a la función callback, ahora se debe hacer las peticiones a la API usando la función `fetchData` que hemos creado y pasándole una función callback.
+
+```js
+//Multiples peticiones a un API con callbacks
+//Primero se trabajo con la API (url principal)
+fetchData(API, function(erro1, data1){
+
+    //Validación en caso haya error
+    if  (erro1) return console.log(error1);
+
+    //Nuevamente se llama el callback para obtener data del primer personaje
+    //como url se pasa la del perosnaje [0] (primer personaje)
+    fetchData(API + data1.results[0].id, function(error2, data2){
+
+        //Validación del error
+        if (error2) return console.log(error2);
+
+        //Llamar al callback para obtener el origen del primer personaje
+        fetchData(data2.origin.url, function(error3, data3){
+
+            //validación del error
+            if (error3) return console.log(erro3);
+
+            //Mostrar la cantidad de elementos (data1)
+            console.log('Total:', data1.info.count);
+
+            //Mostrar el nombre del personaje (data2)
+            console.log('First:', data2.name);
+
+            //Mostrar la dimensión del personaje (data3)
+            console.log('Dimension:', data3.dimension);
+
+        })
+    })
+})
+
+//Se debe agregar en package.json un nuevo script para ejecutar este archivo
+//"callback:challenge": "node src/callback/challenge.js"
+//para llamar desde consola ejecutar:
+//npm run callback:challenge
+```
+
+Se hace tres peticiones ya que son tres datos que se quieren obtener:
+
+1. La cantidad total de personajes, se obtiene de la primer petición (data1)
+2. El nombre del primer personaje, obtenido de la segunda petición (data2)
+3. La dimensión del primer personaje, se obtiene de la tercera petición (data3)
 
 ### 7. Implementando Promesas
 
