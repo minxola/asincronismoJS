@@ -78,6 +78,13 @@ fetchData(API, function(erro1, data1){
     })
 })
 
+//Luego de la ejecución se obtiene:
+/*
+Total: 826
+First: Rick Sanchez
+Dimension: Dimension C-137
+*/
+
 //Se debe agregar en package.json un nuevo script para ejecutar este archivo
 //"callback:challenge": "node src/callback/challenge.js"
 //para llamar desde consola ejecutar:

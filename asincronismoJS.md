@@ -200,17 +200,25 @@ fetchData(API, function(erro1, data1){
             if (error3) return console.log(erro3);
 
             //Mostrar la cantidad de elementos (data1)
-            console.log('Total:', data1.info.count);
+            console.log('Total: ', data1.info.count);
 
             //Mostrar el nombre del personaje (data2)
-            console.log('First:', data2.name);
+            console.log('First: ', data2.name);
 
             //Mostrar la dimensión del personaje (data3)
-            console.log('Dimension:', data3.dimension);
+            console.log('Dimension: ', data3.dimension);
 
         })
     })
 })
+
+//El resultado será
+/*
+Total: 826
+First: Rick Sanchez
+Dimension: Dimension C-137
+*/
+
 
 //Se debe agregar en package.json un nuevo script para ejecutar este archivo
 //"callback:challenge": "node src/callback/challenge.js"
@@ -226,7 +234,24 @@ Se hace tres peticiones ya que son tres datos que se quieren obtener:
 
 ### 7. Implementando Promesas
 
-Las promesas usan el objeto `Promise()`, que nos indica que puede suceder algo: ahora, en el futuro o nunca.
+El objeto **`Promise`** (Promesa) es usado para computaciones asíncronas. Una promesa representa un valor que puede estar disponible ahora, en el futuro, o nunca.
+
+#### Sintaxis de una Promesa
+
+```js
+new Promise( /* ejecutor */ function(resolver, rechazar) { ... } );
+```
+
+#### Ejecutor
+
+Una función con los argumentos `resolver` y `rechazar`. La función `ejecutor` es ejecutada inmediatamente por la implementación de la Promesa, pasándole las funciones `resolver` y `rechazar` (el ejecutor es llamado incluso antes de que el constructor de la `Promesa` devuelva el objeto creado). Las funciones `resolver` y `rechazar`, al ser llamadas, resuelven o rechazan la promesa, respectivamente. Normalmente el ejecutor inicia un trabajo asíncrono, y luego, una vez que es completado, llama a la función `resolver` para resolver la promesa o la rechaza si ha ocurrido un error.
+Si un error es lanzado en la función ejecutor, la promesa es rechazada y el valor de retorno del ejecutor es rechazado.
+
+Una `Promesa` se encuentra en uno de los siguientes estados:
+
+- *pendiente (pending)*: estado inicial, no cumplida o rechazada.
+- *cumplida (fulfilled)*: significa que la operación se completó satisfactoriamente.
+- *rechazada (rejected)*: significa que la operación falló.
 
 #### Estructura de las promesas
 
@@ -344,6 +369,55 @@ Las respuestas resolve se mostrarán en un array al igual que los errores.
 > ```
 
 ### 8. Resolver problema con Promesas
+
+Ahora usaremos las promesas para resolver el problema anterior el cual se hizo con callbacks:
+
+```js
+//Instanciar xmlhttprequest
+let XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+
+//Función que permite traer información desde la API
+const fetchData = (url_api) => {
+    //crear la promesa
+    return new Promise((resolve, reject) => {
+        const xhttp = new XMLHttpRequest();
+        xhttp.open('GET', url_api, true);
+        xhttp.onreadystatechange = (() => {
+            if(xhttp.readyState === 4){
+                (xhttp.status === 200)
+                    ? resolve(JSON.parse(xhttp.responseText))
+                    : reject(new Error('Error ', url_api));
+            }
+        });
+        xhttp.send();
+    });
+}
+
+//Ahora resolvemos el problema usando Promesas
+const API = 'https://rickandmortyapi.com/api/character/';
+
+fetchData(API)
+    .then(data => {
+        console.log(data.info.count);
+        return fetchData(`${API}${data.results[0].id}`)
+    })
+    .then(data => {
+        console.log(data.name);
+        return fetchData(data.origin.url);
+    })
+    .then(data => {
+        console.log(data.dimension);
+    })
+    .catch(error => console.log(error));
+
+//El resultado de la ejecución al igual que con callbacks será
+/*
+826
+Rick Sanchez
+Dimension C-137
+*/
+
+```
 
 ### 9. Conociendo Async/Await
 
