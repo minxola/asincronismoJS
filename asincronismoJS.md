@@ -226,6 +226,123 @@ Se hace tres peticiones ya que son tres datos que se quieren obtener:
 
 ### 7. Implementando Promesas
 
+Las promesas usan el objeto `Promise()`, que nos indica que puede suceder algo: ahora, en el futuro o nunca.
+
+#### Estructura de las promesas
+
+La estructura básica de una promesa es:
+
+```js
+const algoPasara = () => {
+    //El método es con mayuscula Promise()
+    return new Promise((resolve, reject) => {
+        if(true){
+            resolve('Everything is ok');
+        } else {
+            reject('Something was wrong');
+        }
+    });
+};
+
+//Para ejecutar la promesa
+algoPasara()
+	.then(resolve => console.log(resolve))
+	.catch(error => console.log(error));
+
+//Everything is ok
+```
+
+Los parámetros pasados a la función dentro de `Promise()` son genéricos, no son palabras claves, se puede pasar cualquier palabra. La primera esta asociado a una respuesta exitosa y la segunda a un error.
+
+El **resolve** pasado a `then()` puede ser cualquiera, ya que `then()` obtendrá el valor devuelto por la promesa. `.then(x => console.log(x))` daría el mismo resultado.
+
+Lo mismo sucede con `catch()`, pues este captura el reject o error, por lo que se le puede pasar cualquier otro valor: `.cathc(e => console.log(e))` daría el mismo resultado.
+
+El siguiente código tendría el mismo comportamiento:
+
+```js
+const promise = () => {
+    return new Promise((r, j) => {
+        if(true){
+            r('Excellent');
+        } else {
+            j('Error');
+        }
+    });
+};
+//ejecutar la promesa
+promise()
+	.then(j => console.log(j))
+	.catch(e => console.log(e));
+
+//Excellent
+```
+
+Otro ejemplo de promesa:
+
+```js
+const promesa = () => {
+    return new Promise((response, reject) => {
+        if(true){
+            setTimeout(() => {
+                response('Todo OK');
+            }, 5000);
+        } else {
+            const error = new Error('Algo malo pasó');
+            reject(error);
+        }
+    });
+};
+
+promesa()
+    .then(respuesta => console.log(respuesta))
+    .then(() => console.log('Mensaje cualquiera'))
+    .catch(e => console.log(e));
+//Todo OK
+//Mensaje cualquiera
+
+//Usando then(), podemos ejecutar mensajes o codigos adicionales durante la ejecución de la promesa
+```
+
+Es una buena práctica crear los errores con el método `Error()` ya que esto nos brindará mucho mas información en caso suceda un error al momento de ejecutar nuestro código.
+
+#### Ejecutar varias promesas
+
+```js
+Promise.all([algoPasara(), promesa()])
+    .then(response => {
+        console.log('Array of results', response);
+    })
+    .catch(e => {
+        console.log('Arrary of errors', err);
+    });
+```
+
+Las respuestas resolve se mostrarán en un array al igual que los errores.
+
+> :warning: **ATENCIÓN**:
+>
+> El asignar la promesa a una variable se puede hacer de dos maneras:
+>
+> ```js
+> const promise = new Promise((resolve, reject) => {
+>     //code here
+> });
+> ```
+>
+> De esta manera al ejecutarse el código la promesa se ejecutará también al ejecutarse el archivo sin esperar al llamado de la función.
+>
+> Entonces para que no se ejecute y generar una ejecución asíncrona la promesa se encapsula según los ejemplos mostrados, lo cual sería una buena práctica y para que sea asíncrona nuestra función:
+>
+> ```js
+> //código de la promesa encapsulado, solo ejecutará al momento de llamar a la función
+> const promise = () => {
+>     return new Promise((response, reject) => {
+>        //code here 
+>     });
+> }
+> ```
+
 ### 8. Resolver problema con Promesas
 
 ### 9. Conociendo Async/Await
