@@ -22,7 +22,7 @@ const bestFunction = async () => {
         const waiting = await doSomething();
         console.log(waiting, ' 2');
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
