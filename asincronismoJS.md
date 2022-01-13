@@ -421,6 +421,90 @@ Dimension C-137
 
 ### 9. Conociendo Async/Await
 
+#### Función async
+
+La declaración de función `async` define una función asíncrona, la cual devuelve un objeto  `async function`.
+
+**Sintaxis de una función async**
+
+```js
+async function name(/*parametros*/){
+    //statemens (enunciados)
+}
+```
+
+Cuando se llama a una función `async`, esta devuelve un elemento [`Promise`](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Promise). Cuando la función `async` devuelve un valor, `Promise` se resolverá con el valor devuelto. Si la función `async` genera una excepción o algún valor, `Promise` se rechazará con el valor generado.
+
+Una función `async` puede contener una expresión [`await`](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Operators/await), la cual pausa la ejecución de la función asíncrona y espera la resolución de la `Promise` pasada y, a continuación, reanuda la ejecución de la función `async` y devuelve el valor resuelto
+
+#### Operador await
+
+El operador `await` es usado para esperar una `Promise`. Solo puede ser usado dentro de la función `async function`.
+
+La expresión `await` provoca que la ejecución de una función `async` sea pausada hasta que una `Promise` sea terminada o rechazada, y regresa a la ejecución de la función `async` después del término. Al regreso de la ejecución, el valor de la expresión `await` es la regresada por una promesa terminada.
+
+Si la `Promise` es rechazada, el valor de la expresión `await` tendrá el valor de rechazo.
+
+Si el valor de la expresión seguida del operador `await` no es una promesa, será convertido a una `resolved Promise`.
+
+> La finalidad de las funciones `async`/`await` es simplificar el comportamiento del uso síncrono de promesas y realizar algún comportamiento específico en un grupo de `Promises`. Del mismo modo que las `Promises` son semejantes a las devoluciones de llamadas estructuradas, `async`/`await` se asemejan a una combinación de generadores y promesas.
+
+#### formas de declarar funciones async
+
+```js
+async function myAsyncFunction(){
+    //code here
+}
+
+//otra forma
+const myAsyncFunction = async function (){
+    //code here
+};
+
+//o también usando arrow functions
+const myAsyncFunction = async () => {
+    //code here
+}
+```
+
+**Ejemplos con async function**:
+
+```js
+//Generando una promesa
+const doSomething = () => {
+    return new Promise((resolve, reject) => {
+        (true)
+            ? setTimeout(() => resolve('Do Something'), 5000)
+            : reject(new Error('Something was wrong'))
+    });
+};
+
+//1. sin captura de errores
+const doAsync = async () => {
+    //await pausa hasta que se resuelva la promesa
+    const waiting = await doSomething();
+    console.log(waiting, ' 1');
+};
+
+console.log('Before 1');
+doAsync();
+console.log('After 1');
+
+//2. Capturando errores con try y catch
+const bestFunction = async () => {
+    try {
+        const waiting = await doSomething();
+        console.log(waiting, ' 2');
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+console.log('Before 2');
+bestFunction();
+console.log('After 2');
+```
+
 ### 10. Resolver problema con Async/Await
 
 ## Comprender las diferencias entre las estructuras asincrónicas
