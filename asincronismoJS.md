@@ -507,9 +507,92 @@ console.log('After 2');
 
 ### 10. Resolver problema con Async/Await
 
+Para resolver el problema planteado se hace uso del siguiente código:
+
+```js
+//Instanciar xmlhttprequest
+let XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+
+//Función que permite traer información desde la API
+const fetchData = (url_api) => {
+    //crear la promesa
+    return new Promise((resolve, reject) => {
+        const xhttp = new XMLHttpRequest();
+        xhttp.open('GET', url_api, true);
+        xhttp.onreadystatechange = (() => {
+            if(xhttp.readyState === 4){
+                (xhttp.status === 200)
+                    ? resolve(JSON.parse(xhttp.responseText))
+                    : reject(new Error('Error ', url_api));
+            }
+        });
+        xhttp.send();
+    });
+}
+
+//Haciendo uso de async/await
+const API = 'https://rickandmortyapi.com/api/character/';
+
+const getData = async (url_api) => {
+    try {
+        const data = await fetchData(url_api);
+        const caracter = await fetchData(`${url_api}${data.results[0].id}`);
+        const origin = await fetchData(caracter.origin.url);
+
+        console.log('Cantidad: ', data.info.count);
+        console.log('Primer Personaje: ', caracter.name);
+        console.log('Dimension: ', origin.dimension);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+console.info('Before');
+getData(API);
+console.info('After');
+
+//El resultado en la consola será
+/*
+Before
+After
+Cantidad:  826
+Primer Personaje:  Rick Sanchez
+Dimension:  Dimension C-137
+*/
+```
+
 ## Comprender las diferencias entre las estructuras asincrónicas
 
 ### 11. Callbacks vs Promesas vs Async/Await
 
+#### Callbacks
+
+- **Ventajas:**
+  - Simpleza: sintaxis simple y fácil de entender
+  - Compatibilidad: Su código funciona en todos los navegadores
+- **Desventajas:**
+  - Estructura robusta, poco intuitivo cuando hay demasiadas anidaciones (callback hell)
+  - No tiene un camino claro para el manejo de errores
+
+#### Promesas
+
+- **Ventajas:**
+  - Flujo fluido: maneja flujos complejos, anidar llamadas y su sintaxis es clara
+  - Manejo de errores: Nos brinda la posibilidad de manejar los errores
+- **Desventajas:**
+  - Polyfill: No son compatibles con todos los navegadores
+  - Para explorer 11, se necesita transpilar el código para que funcione correctamente
+
+#### Async/Await
+
+- **Ventajas:**
+  - Sintaxis: Simple y clara de leer. Su funcionamiento es sencillo de entender.
+  - Try/Catch: Nos permiten tener una sintaxis clara para el manejo de errores.
+- **Desventajas:**
+  - Polyfill: No tienen toda la compatibilidad con navegadores desfasados, es necesario transpilar el código antes de utilizarlos en estos navegadores.
+
 ### 12. Conclusiones
 
+Ahora que entiendes las ventajas y desventajas de los callbacks, promesas y async/await puedes tomar la decisión de cuál implementar en tus proyectos, teniendo en cuenta su uso, así como las implementaciones que estés realizando. En lo particular he dejado atrás a los Callbacks para pasar mi lógica que maneje asincronismo a las promesas y en casos particulares utilizar Async/Await.
+
+Cuéntame, ¿cuáles han sido tus observaciones y cómo implementarías mejor estos recursos que dispones para manejar el asincronismo en JavaScript?
